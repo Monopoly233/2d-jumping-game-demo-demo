@@ -1,0 +1,74 @@
+{
+  "scenes": [
+    {
+      "key": "Level1Scene",
+      "name": "第一关",
+      "index": 1,
+      "backgroundColor": "0x87CEEB",
+      "width": 3000,
+      "height": 1500,
+      "player": {
+        "x": 100,
+        "y": 750
+      },
+      "ground": {
+        "height": 64,
+        "tint": "0x888888"
+      },
+      "platforms": [
+        { "x": 400, "y": 450, "tint": "0x0088FF" },
+        { "x": 600, "y": 350, "tint": "0x0088FF" },
+        { "x": 800, "y": 250, "tint": "0x0088FF" },
+        { "x": 1000, "y": 550, "tint": "0x0088FF" },
+        { "x": 1200, "y": 450, "tint": "0x0088FF" },
+        { "x": 1400, "y": 350, "tint": "0x0088FF" },
+        { "x": 1600, "y": 250, "tint": "0x0088FF" },
+        { "x": 1800, "y": 350, "tint": "0x0088FF" },
+        { "x": 2000, "y": 450, "tint": "0x0088FF" }
+      ],
+      "portals": [
+        {
+          "x": 2200,
+          "y": 1400,
+          "targetScene": "Level2Scene",
+          "tint": "0x00ffff"
+        }
+      ],
+      "helpText": "关卡 1: 使用方向键或WASD移动，到达右侧传送门\n按 E 键开启编辑器"
+    },
+    {
+      "key": "Level2Scene",
+      "name": "第二关",
+      "index": 2,
+      "backgroundColor": "0xFFA500",
+      "width": 3000,
+      "height": 1500,
+      "player": {
+        "x": 100,
+        "y": 750
+      },
+      "ground": {
+        "height": 64,
+        "tint": "0xFF3300"
+      },
+      "platforms": [
+        { "x": 200, "y": 550, "tint": "0xFF5500" },
+        { "x": 500, "y": 450, "tint": "0xFF5500" },
+        { "x": 800, "y": 350, "tint": "0xFF5500" },
+        { "x": 1100, "y": 250, "tint": "0xFF5500" },
+        { "x": 1400, "y": 350, "tint": "0xFF5500" },
+        { "x": 1700, "y": 450, "tint": "0xFF5500" },
+        { "x": 2000, "y": 550, "tint": "0xFF5500" }
+      ],
+      "portals": [
+        {
+          "x": 2200,
+          "y": 1400,
+          "targetScene": "Level1Scene",
+          "tint": "0x00ffff"
+        }
+      ],
+      "helpText": "关卡 2: 更具挑战性的布局，找到传送门返回关卡1\n按 E 键开启编辑器"
+    }
+  ]
+} 

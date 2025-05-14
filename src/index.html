@@ -12,14 +12,33 @@
         align-items: center;
         min-height: 100vh;
         background: #333;
+        flex-direction: column;
       }
-      canvas {
+      #game-container {
+        width: 800px;
+        height: 600px;
         border: 2px solid #fff;
+        margin-bottom: 20px;
+      }
+      .controls {
+        color: #fff;
+        font-family: Arial, sans-serif;
+        margin-top: 10px;
+        text-align: center;
       }
     </style>
+    <script>
+      // 禁用默认右键菜单
+      document.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        return false;
+      }, false);
+    </script>
   </head>
   <body>
-    <div id="game"></div>
-    <h1>A left D right K jump</h1>
+    <div id="game-container"></div>
+    <div class="controls">
+      方向键或WASD移动，上方向键或K键跳跃，E键开启/关闭编辑器
+    </div>
   </body>
 </html> 
