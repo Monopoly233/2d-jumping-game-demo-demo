@@ -22,6 +22,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
     
     // 获取键盘控制
+    if (!scene.input.keyboard) {
+      throw new Error('Keyboard input is not available');
+    }
+    
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.wasdKeys = scene.input.keyboard.addKeys({
       A: Phaser.Input.Keyboard.KeyCodes.A,
@@ -32,6 +36,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
+    if (!this.body) return;
+
     // 左右移动 (同时支持方向键和AD键)
     const isLeftPressed = this.cursors.left.isDown || this.wasdKeys.A.isDown;
     const isRightPressed = this.cursors.right.isDown || this.wasdKeys.D.isDown;

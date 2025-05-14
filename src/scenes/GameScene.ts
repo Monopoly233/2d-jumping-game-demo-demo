@@ -53,15 +53,17 @@ export class GameScene extends Phaser.Scene {
 
   private createTemporaryGraphics() {
     // 创建临时玩家图形
-    const playerGraphics = this.make.graphics({ x: 0, y: 0, add: false });
+    const playerGraphics = this.make.graphics();
     playerGraphics.fillStyle(0xff0000, 1);
     playerGraphics.fillRect(0, 0, 32, 32);
     playerGraphics.generateTexture('player', 32, 32);
+    playerGraphics.destroy();
 
     // 创建临时平台图形
-    const platformGraphics = this.make.graphics({ x: 0, y: 0, add: false });
+    const platformGraphics = this.make.graphics();
     platformGraphics.fillStyle(0x00ff00, 1);
     platformGraphics.fillRect(0, 0, 400, 32);
     platformGraphics.generateTexture('platform', 400, 32);
+    platformGraphics.destroy();
   }
 } 
