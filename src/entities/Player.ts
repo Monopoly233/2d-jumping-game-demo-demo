@@ -6,12 +6,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     D: Phaser.Input.Keyboard.Key;
   };
   private jumpKey: Phaser.Input.Keyboard.Key;
-  private baseJumpVelocity: number = -500; // 基础跳跃速度（短跳）
-  private maxJumpVelocity: number = -735; // 最大跳跃速度（长跳）
-  private jumpBoostForce: number = -1200; // 长按时的持续向上推力
-  private isJumpBoosting: boolean = false; // 是否正在提升跳跃高度
-  private maxJumpBoostTime: number = 200; // 最大跳跃提升时间（毫秒）
-  private jumpBoostTimer: number = 0; // 跳跃提升计时器
+  private baseJumpVelocity: number = -500; // 保持基础跳跃速度不变
+  private maxJumpVelocity: number = -900; // 增加最大跳跃速度
+  private jumpBoostForce: number = -2000; // 增加加速力度
+  private isJumpBoosting: boolean = false;
+  private maxJumpBoostTime: number = 250; // 增加加速时间
+  private jumpBoostTimer: number = 0;
   private maxSpeed: number = 300;
   private acceleration: number = 3000;
   private deceleration: number = 6000;
