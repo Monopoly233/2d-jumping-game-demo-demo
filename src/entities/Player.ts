@@ -6,10 +6,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     D: Phaser.Input.Keyboard.Key;
   };
   private jumpKey: Phaser.Input.Keyboard.Key;
-  private jumpVelocity: number = -600;
+  private baseJumpVelocity: number = -500; // 基础跳跃速度（短跳）
+  private maxJumpVelocity: number = -735; // 最大跳跃速度（长跳）
+  private jumpBoostForce: number = -1200; // 长按时的持续向上推力
+  private isJumpBoosting: boolean = false; // 是否正在提升跳跃高度
+  private maxJumpBoostTime: number = 200; // 最大跳跃提升时间（毫秒）
+  private jumpBoostTimer: number = 0; // 跳跃提升计时器
   private maxSpeed: number = 300;
-  private acceleration: number = 2000;
-  private deceleration: number = 3000;
+  private acceleration: number = 3000;
+  private deceleration: number = 6000;
   
   // 二段跳相关变量
   private jumpCount: number = 0;
@@ -28,7 +33,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     // 设置物理属性 - 为动态body (不是StaticBody)
     this.setBounce(0);
     this.setCollideWorldBounds(true);
-    this.setSize(30, 30); // 稍微小一点的碰撞箱
+    this.setSize(30, 30); // 设置碰撞箱为30x60（两个格子高）
+    this.setDisplaySize(30, 60); // 设置显示大小为30x60
     
     console.log('Player创建完成，位置:', x, y);
     
@@ -88,14 +94,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     // 跳跃 (支持上方向键和K键)
     const isJumpPressed = this.cursors.up.isDown || this.jumpKey.isDown;
     
-    // 当玩家落地时重置跳跃次数
+    // 当玩家落地时重置跳跃状态
     if (isOnGround) {
       this.jumpCount = 0;
+      this.isJumpBoosting = false;
+      this.jumpBoostTimer = 0;
     }
     
-    // 处理按键抬起状态，确保按一次键只跳一次
+    // 处理按键抬起状态
     if (!isJumpPressed) {
       this.jumpKeyReleased = true;
+      this.isJumpBoosting = false; // 松开按键时停止提升
     }
     
     // 处理跳跃
@@ -104,14 +113,32 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       
       if (isOnGround) {
         // 第一段跳跃 (在地面上)
-        this.setVelocityY(this.jumpVelocity);
+        this.setVelocityY(this.baseJumpVelocity);
         this.jumpCount = 1;
+        this.isJumpBoosting = true;
+        this.jumpBoostTimer = 0;
         console.log('玩家跳跃 - 第一段');
       } else if (this.jumpCount < this.maxJumps) {
         // 第二段跳跃 (在空中)
-        this.setVelocityY(this.jumpVelocity);
+        this.setVelocityY(this.baseJumpVelocity);
         this.jumpCount++;
+        this.isJumpBoosting = true;
+        this.jumpBoostTimer = 0;
         console.log('玩家跳跃 - 第二段');
+      }
+    }
+    
+    // 处理长按跳跃提升
+    if (this.isJumpBoosting && isJumpPressed) {
+      this.jumpBoostTimer += (1000/60); // 假设60FPS
+      if (this.jumpBoostTimer <= this.maxJumpBoostTime) {
+        const currentVelocityY = body.velocity.y;
+        // 只有当当前速度大于最大跳跃速度时才继续提升
+        if (currentVelocityY > this.maxJumpVelocity) {
+          this.setVelocityY(currentVelocityY + this.jumpBoostForce * (1/60));
+        }
+      } else {
+        this.isJumpBoosting = false;
       }
     }
   }
