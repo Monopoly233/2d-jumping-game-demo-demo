@@ -1,8 +1,13 @@
 import 'phaser';
 import { Level1Scene } from './scenes/Level1Scene';
 import { Level2Scene } from './scenes/Level2Scene';
+import { ClearCache } from './utils/ClearCache';
 
 console.log('初始化游戏...');
+
+// 清除本地缓存的关卡数据，确保使用JSON中的数据
+console.log('清除缓存的关卡数据...');
+ClearCache.clearLevelData();
 
 // 创建全局游戏配置
 const config: Phaser.Types.Core.GameConfig = {

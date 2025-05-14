@@ -20,6 +20,7 @@ export class Level1Scene extends LevelScene {
   create() {
     console.log('Level1Scene create开始');
     super.create();
+    
     console.log('Level1Scene create完成');
   }
   
@@ -34,37 +35,6 @@ export class Level1Scene extends LevelScene {
     
     console.log('玩家创建在:', 100, this.sceneHeight / 2);
     console.log('Level1Scene玩家创建完成');
-  }
-  
-  createDefaultLayout() {
-    console.log('Level1Scene创建默认布局');
-    
-    // 创建一系列平台
-    const platformPositions = [
-      { x: 400, y: 450 },
-      { x: 600, y: 350 },
-      { x: 800, y: 250 },
-      { x: 1000, y: 550 },
-      { x: 1200, y: 450 },
-      { x: 1400, y: 350 },
-      { x: 1600, y: 250 },
-      { x: 1800, y: 350 },
-      { x: 2000, y: 450 },
-    ];
-    
-    // 创建平台
-    platformPositions.forEach(pos => {
-      const platform = this.platforms.create(pos.x, pos.y, 'platform');
-      // 使用蓝色色调
-      platform.setTint(0x0088FF);
-    });
-    
-    // 创建通往Level2的传送门
-    const portal = new Portal(this, 2200, this.sceneHeight - 100, 'Level2Scene');
-    this.add.existing(portal);
-    this.portals.push(portal);
-    
-    console.log('Level1Scene默认布局创建完成');
   }
   
   createUI() {

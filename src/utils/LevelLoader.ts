@@ -57,6 +57,7 @@ export class LevelLoader {
 
   // 预加载JSON文件
   public preload(scene: Phaser.Scene): void {
+    console.log('正在加载关卡JSON数据: ./data/levels.json');
     scene.load.json('levelsData', './data/levels.json');
   }
 
@@ -65,6 +66,8 @@ export class LevelLoader {
     try {
       // 获取JSON数据
       this.jsonData = scene.cache.json.get('levelsData');
+      
+      console.log('获取到的JSON数据:', this.jsonData);
       
       if (!this.jsonData || !this.jsonData.scenes) {
         console.error('levels.json数据无效或不包含scenes数组');
@@ -77,6 +80,12 @@ export class LevelLoader {
       // 缓存所有场景数据到Map
       this.jsonData.scenes.forEach((scene: LevelData) => {
         this.sceneData.set(scene.key, scene);
+        console.log(`已加载场景: ${scene.key}, 平台数: ${scene.platforms.length}`);
+        
+        // 打印平台y坐标
+        scene.platforms.forEach((platform, index) => {
+          console.log(`平台 ${index}: y = ${platform.y}`);
+        });
       });
 
       console.log(`成功加载${this.sceneData.size}个场景数据`);
