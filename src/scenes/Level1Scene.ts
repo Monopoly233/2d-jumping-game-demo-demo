@@ -1,6 +1,7 @@
 import { LevelScene } from './LevelScene';
 import { Player } from '../entities/Player';
 import { Portal } from '../entities/Portal';
+import { Enemy } from '../entities/Enemy';
 
 export class Level1Scene extends LevelScene {
   constructor() {
@@ -21,6 +22,12 @@ export class Level1Scene extends LevelScene {
     console.log('Level1Scene create开始');
     super.create();
     
+    // 创建一些敌人
+    this.createEnemies();
+    
+    // 设置敌人的碰撞
+    this.setupEnemyCollisions();
+    
     console.log('Level1Scene create完成');
   }
   
@@ -37,40 +44,68 @@ export class Level1Scene extends LevelScene {
     console.log('Level1Scene玩家创建完成');
   }
   
-  createUI() {
-    console.log('Level1Scene创建UI');
+  protected createUI(): void {
+    super.createUI();
     
-    // 创建基础UI元素 (FPS和坐标显示)
-    this.fpsText = this.add.text(10, 10, '', {
+    // 添加帮助文本
+    const helpText = this.add.text(16, 16, '使用方向键或WASD移动\nK键跳跃\nJ键射击', {
+      fontSize: '18px',
+      color: '#fff',
+      backgroundColor: '#000',
+      padding: { x: 10, y: 5 }
+    });
+    helpText.setScrollFactor(0);
+    
+    // 添加FPS显示
+    this.fpsText = this.add.text(16, 90, '', { 
       fontSize: '16px',
-      color: '#ffffff',
-      backgroundColor: '#000000',
-      padding: { x: 5, y: 5 }
+      color: '#fff',
+      backgroundColor: '#000',
+      padding: { x: 10, y: 5 }
     });
     this.fpsText.setScrollFactor(0);
     
-    this.coordsText = this.add.text(10, 40, '', {
+    // 添加坐标显示
+    this.coordsText = this.add.text(16, 130, '', {
       fontSize: '16px',
-      color: '#ffffff',
-      backgroundColor: '#000000',
-      padding: { x: 5, y: 5 }
+      color: '#fff',
+      backgroundColor: '#000',
+      padding: { x: 10, y: 5 }
     });
     this.coordsText.setScrollFactor(0);
     
-    // 添加帮助文本
-    const helpText = this.add.text(
-      10, 
-      80, 
-      this.helpText || '关卡 1: 使用方向键或WASD移动，到达右侧传送门\n按 E 键开启编辑器', 
-      { 
-        fontSize: '18px',
-        color: '#fff',
-        backgroundColor: '#000',
-        padding: { x: 10, y: 5 }
-      }
-    );
-    helpText.setScrollFactor(0);
-    
     console.log('Level1Scene UI创建完成');
+  }
+
+  private setupEnemyCollisions(): void {
+    // 敌人与平台的碰撞
+    this.enemies.forEach(enemy => {
+      // 与地面的碰撞
+      this.physics.add.collider(enemy, this.ground);
+      
+      // 与平台的碰撞
+      this.physics.add.collider(enemy, this.platforms);
+    });
+  }
+
+  private createEnemies(): void {
+    // 在一些平台上创建敌人
+    const enemyPositions = [
+      { x: 400, y: 100 },  // 调整位置，让敌人从高处掉落
+      { x: 600, y: 100 },
+      { x: 800, y: 100 }
+    ];
+
+    enemyPositions.forEach(pos => {
+      const enemy = new Enemy(this, pos.x, pos.y);
+      this.enemies.push(enemy);
+    });
+  }
+
+  update() {
+    super.update();
+    
+    // 更新所有敌人
+    this.enemies.forEach(enemy => enemy.update());
   }
 } 

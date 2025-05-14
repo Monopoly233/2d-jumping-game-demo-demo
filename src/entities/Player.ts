@@ -1,3 +1,6 @@
+import { Bullet } from './Bullet';
+import { LevelScene } from '../scenes/LevelScene';
+
 export class Player extends Phaser.Physics.Arcade.Sprite {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasdKeys: {
@@ -6,6 +9,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     D: Phaser.Input.Keyboard.Key;
   };
   private jumpKey: Phaser.Input.Keyboard.Key;
+  private shootKey: Phaser.Input.Keyboard.Key;
   private baseJumpVelocity: number = -500; // 保持基础跳跃速度不变
   private maxJumpVelocity: number = -900; // 增加最大跳跃速度
   private jumpBoostForce: number = -2000; // 增加加速力度
@@ -15,6 +19,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private maxSpeed: number = 300;
   private acceleration: number = 3000;
   private deceleration: number = 6000;
+  private shootCooldown: number = 300; // 射击冷却时间（毫秒）
+  private lastShootTime: number = 0;
+  private direction: number = 1; // 1表示右边，-1表示左边
   
   // 二段跳相关变量
   private jumpCount: number = 0;
@@ -50,6 +57,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       D: Phaser.Input.Keyboard.KeyCodes.D
     }) as any;
     this.jumpKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K);
+    this.shootKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
   }
 
   update() {
@@ -73,9 +81,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (isLeftPressed) {
       // 向左加速
       this.setAccelerationX(-this.acceleration);
+      this.direction = -1;
     } else if (isRightPressed) {
       // 向右加速
       this.setAccelerationX(this.acceleration);
+      this.direction = 1;
     } else {
       // 没有按键时减速
       this.setAccelerationX(0);
@@ -140,6 +150,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       } else {
         this.isJumpBoosting = false;
       }
+    }
+
+    // 处理射击
+    if (this.shootKey.isDown) {
+      this.shoot();
+    }
+  }
+
+  private shoot(): void {
+    const currentTime = this.scene.time.now;
+    
+    // 检查是否超过冷却时间
+    if (currentTime - this.lastShootTime >= this.shootCooldown) {
+      // 从玩家位置发射子弹
+      new Bullet(this.scene as LevelScene, this.x, this.y, this.direction);
+      this.lastShootTime = currentTime;
     }
   }
 } 

@@ -3,6 +3,7 @@ import { Portal } from '../entities/Portal';
 import { LevelEditor } from '../utils/LevelEditor';
 import { LevelLoader, PlatformData, PortalData } from '../utils/LevelLoader';
 import { Platform } from '../entities/Platform';
+import { Enemy } from '../entities/Enemy';
 
 export class LevelScene extends Phaser.Scene {
   // 场景基本元素
@@ -12,6 +13,7 @@ export class LevelScene extends Phaser.Scene {
   protected fpsText!: Phaser.GameObjects.Text;
   protected coordsText!: Phaser.GameObjects.Text;
   protected levelEditor!: LevelEditor;
+  public enemies: Enemy[] = []; // 改为 public，让子弹可以访问
   
   // 场景属性
   protected sceneWidth: number = 3000;
