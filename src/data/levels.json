@@ -4,7 +4,7 @@
       "key": "Level1Scene",
       "name": "第一关",
       "index": 1,
-      "backgroundColor": "0x87CEEB",
+      "backgroundColor": "0x000000",
       "width": 3000,
       "height": 1500,
       "player": {

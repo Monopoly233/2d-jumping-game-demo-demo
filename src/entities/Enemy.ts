@@ -1,7 +1,7 @@
 import { LevelScene } from '../scenes/LevelScene';
 
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
-    private health: number = 100;
+    private health: number = 30;
     private maxHealth: number = 100;
     private healthBar: Phaser.GameObjects.Graphics;
     private healthBarWidth: number = 40;

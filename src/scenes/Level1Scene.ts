@@ -8,7 +8,7 @@ export class Level1Scene extends LevelScene {
     super({ key: "Level1Scene" });
     this.sceneName = "Level1Scene";
     this.sceneIndex = 1;
-    this.backgroundColor = 0x87CEEB; // 天蓝色
+    this.backgroundColor = 0x000000; // 天蓝色
     console.log('Level1Scene构造完成');
   }
   
