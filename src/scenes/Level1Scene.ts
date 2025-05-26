@@ -4,6 +4,11 @@ import { Portal } from '../entities/Portal';
 import { Enemy } from '../entities/Enemy';
 
 export class Level1Scene extends LevelScene {
+  private performanceStats!: Phaser.GameObjects.Text;
+  private lastSecond: number = 0;
+  private frameCount: number = 0;
+  private currentFPS: number = 0;
+
   constructor() {
     super({ key: "Level1Scene" });
     this.sceneName = "Level1Scene";
@@ -56,17 +61,17 @@ export class Level1Scene extends LevelScene {
     });
     helpText.setScrollFactor(0);
     
-    // 添加FPS显示
-    this.fpsText = this.add.text(16, 90, '', { 
-      fontSize: '16px',
-      color: '#fff',
+    // 添加性能统计显示
+    this.performanceStats = this.add.text(16, 90, '', {
+      fontSize: '14px',
+      color: '#00ff00',
       backgroundColor: '#000',
       padding: { x: 10, y: 5 }
     });
-    this.fpsText.setScrollFactor(0);
+    this.performanceStats.setScrollFactor(0);
     
     // 添加坐标显示
-    this.coordsText = this.add.text(16, 130, '', {
+    this.coordsText = this.add.text(16, 200, '', {
       fontSize: '16px',
       color: '#fff',
       backgroundColor: '#000',
@@ -107,5 +112,39 @@ export class Level1Scene extends LevelScene {
     
     // 更新所有敌人
     this.enemies.forEach(enemy => enemy.update());
+
+    // 更新性能统计
+    this.updatePerformanceStats();
+  }
+
+  private updatePerformanceStats(): void {
+    // 计算FPS
+    const currentSecond = Math.floor(this.game.loop.time / 1000);
+    if (currentSecond !== this.lastSecond) {
+      this.currentFPS = this.frameCount;
+      this.frameCount = 0;
+      this.lastSecond = currentSecond;
+    }
+    this.frameCount++;
+
+    // 获取性能统计
+    const memory = (window.performance as any).memory;
+    
+    let stats = [
+      `FPS: ${this.currentFPS}`,
+      `Active Objects: ${this.children.length}`,
+      `Game Objects: ${this.children.list.length}`,
+      `Physics Bodies: ${this.physics.world.bodies.size}`
+    ];
+
+    // 如果浏览器支持内存统计
+    if (memory) {
+      stats.push(
+        `Memory Used: ${Math.round(memory.usedJSHeapSize / 1024 / 1024 * 100) / 100} MB`,
+        `Memory Total: ${Math.round(memory.totalJSHeapSize / 1024 / 1024 * 100) / 100} MB`
+      );
+    }
+
+    this.performanceStats.setText(stats.join('\n'));
   }
 } 

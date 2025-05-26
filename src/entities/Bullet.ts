@@ -4,7 +4,7 @@ import { Enemy } from './Enemy';
 export class Bullet extends Phaser.Physics.Arcade.Sprite {
     private speed: number = 400;
     private damage: number = 20;
-    private lifespan: number = 2000; // 子弹存在时间（毫秒）
+    private lifespan: number = 20000; // 子弹存在时间（毫秒）
 
     constructor(scene: LevelScene, x: number, y: number, direction: number) {
         super(scene, x, y, 'bullet');

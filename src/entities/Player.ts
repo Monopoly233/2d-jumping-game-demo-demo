@@ -8,20 +8,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     S: Phaser.Input.Keyboard.Key;
     D: Phaser.Input.Keyboard.Key;
   };
-  private jumpKey: Phaser.Input.Keyboard.Key;
-  private shootKey: Phaser.Input.Keyboard.Key;
+  private jumpKey: Phaser.Input.Keyboard.Key; // 跳跃键
+  private shootKey: Phaser.Input.Keyboard.Key; // 射击键
   private baseJumpVelocity: number = -500; // 保持基础跳跃速度不变
   private maxJumpVelocity: number = -900; // 增加最大跳跃速度
   private jumpBoostForce: number = -2000; // 增加加速力度
-  private isJumpBoosting: boolean = false;
+  private isJumpBoosting: boolean = false; // 跳跃提升状态
   private maxJumpBoostTime: number = 250; // 增加加速时间
-  private jumpBoostTimer: number = 0;
-  private maxSpeed: number = 300;
-  private acceleration: number = 3000;
-  private deceleration: number = 6000;
+  private jumpBoostTimer: number = 0; // 跳跃提升计时器
+  private maxSpeed: number = 300; // 最大速度
+  private acceleration: number = 3000; // 加速
+  private deceleration: number = 6000; // 减速
   private shootCooldown: number = 300; // 射击冷却时间（毫秒）
-  private lastShootTime: number = 0;
+  private lastShootTime: number = 0; // 上次射击时间
   private direction: number = 1; // 1表示右边，-1表示左边
+  private keyTimestamps: { A: number; D: number }; // 按键时间戳
   
   // 二段跳相关变量
   private jumpCount: number = 0;
@@ -58,6 +59,24 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }) as any;
     this.jumpKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K);
     this.shootKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
+
+    // 初始化按键时间戳
+    this.keyTimestamps = {
+      A: 0,
+      D: 0
+    };
+
+    if (this.scene.input.keyboard) {
+      this.scene.input.keyboard.on('keydown-A', () => {
+        this.keyTimestamps.A = performance.now();
+      });
+      this.scene.input.keyboard.on('keydown-D', () => {
+        this.keyTimestamps.D = performance.now();
+      });
+    }
+
+    
+
   }
 
   update() {
@@ -71,14 +90,25 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     // 检查玩家是否站在地面上
     const isOnGround = body.touching.down || body.blocked.down;
     
-    // 左右移动 (同时支持方向键和AD键)
-    const isLeftPressed = this.cursors.left.isDown || this.wasdKeys.A.isDown;
-    const isRightPressed = this.cursors.right.isDown || this.wasdKeys.D.isDown;
+    // 左右移动 (支持AD键)
+    const isLeftPressed = this.wasdKeys.A.isDown;
+    const isRightPressed = this.wasdKeys.D.isDown;
 
     // 获取当前水平速度
     const currentVelocityX = body.velocity.x;
 
-    if (isLeftPressed) {
+    if (isLeftPressed && isRightPressed) {
+      // 两个都按下，看谁是后按的
+      if (this.keyTimestamps.A > this.keyTimestamps.D) {
+        // A 后按
+        this.setAccelerationX(-this.acceleration);
+        this.direction = -1;
+      } else {
+        // D 后按
+        this.setAccelerationX(this.acceleration);
+        this.direction = 1;
+      }
+    } else if (isLeftPressed) {
       // 向左加速
       this.setAccelerationX(-this.acceleration);
       this.direction = -1;
@@ -95,6 +125,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setVelocityX(Math.min(0, currentVelocityX + this.deceleration * (1/60)));
       }
     }
+
+    
 
     // 限制最大速度
     if (Math.abs(currentVelocityX) > this.maxSpeed) {
